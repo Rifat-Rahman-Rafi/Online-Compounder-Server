@@ -82,7 +82,7 @@ client.connect(err => {
      let adminToken=req.body.adminToken
      let tokenString=req.body.tokenString
      if(adminToken===undefined||tokenString===undefined)return res.status(501).send({
-      msg : "Email required"
+      msg : "Admin Token and Token String required"
      })
      let adminDetails =await collection.findOne({token:adminToken})
      if(adminDetails==null || adminDetails.isAdmin===false)
@@ -120,61 +120,74 @@ client.connect(err => {
  
    
 
-  //  app.put('/userUpdate',async (req,res)=>{
-  //   // req.body.email
-  //   // data = req.body.adminemail
-  //   // if(data === null || data.isAdmin==false)
-  //   try{
+   app.put('/userUpdate',async (req,res)=>{
+    // req.body.email
+    // data = req.body.adminemail
+    // if(data === null || data.isAdmin==false)
+    try{
 
-  //     if(req.body.email===undefined)return res.status(501).send({
-  //       msg : "Email required"
-  //      })
+      if(req.body.token===undefined)return res.status(501).send({
+        msg : "Token required"
+       })
 
-  //     let data  = await collection.find({email:req.body.email})
+      let data  = await collection.find({_id:req.body.token})
 
-  //     if(req.body.name!==undefined) data.name = req.body.name
-  //     if(req.body.pic!=undefined) data.photo=req.body.pic  
-  //       await collection.updateOne({email:req.body.email},
-  //         {
-  //           $set:data    
-  //         }
-  //         )
-  //         res.status(200).send({
-  //           msg : "Successfully Updated Data"
-  //         })
-  //   }
-  //   catch(err)
-  //       {
-  //         res.status(500).send({
-  //           msg : "Internal server side error"
-  //         })
-  //       }
-  // })
+      if(req.body.name!==undefined) data.name = req.body.name
+      if(req.body.pic!=undefined) data.photo=req.body.pic  
+      if(req.body.registration)data.registration=req.body.registration
+      if(req.body.isDoctor)data.isDoctor=req.body.isDoctor
+      if(req.body.password)data.password=req.body.password
+        await collection.updateOne({token:req.body.token},
+          {
+            $set:data    
+          }
+          )
+          res.status(200).send({
+            msg : "Successfully Updated Data"
+          })
+    }
+    catch(err)
+        {
+          res.status(500).send({
+            msg : "Internal server side error"
+          })
+        }
+  })
 
 
 
 
-    
-  // app.put('/userUpdateByAdmin',(req,res)=>{
-   
-  //   try{
-         
-  //     if(req.body.email===undefined || req.body.adminEmail==undefined)return res.status(501).send({
-  //       msg : "Email required"
-  //      })
 
-      
+  app.put('/userUpdateAdmin',async (req,res)=>{
+    try{
 
-  //   }
-  //   catch(err)
-  //   {
-  //     res.status(500).send({
-  //       msg : "Internal server side error"
-  //     })
-  //   }
-    
+      if(req.body.token===undefined)return res.status(501).send({
+        msg : "Token required"
+       })
 
-  // })
+      let data  = await collection.find({_id:req.body.token})
+
+      if(req.body.name!==undefined) data.name = req.body.name
+      if(req.body.pic!=undefined) data.photo=req.body.pic  
+      if(req.body.registration)data.registration=req.body.registration
+      if(req.body.isDoctor)data.isDoctor=req.body.isDoctor
+      if(req.body.password)data.password=req.body.password
+        await collection.updateOne({token:req.body.token},
+          {
+            $set:data    
+          }
+          )
+          res.status(200).send({
+            msg : "Successfully Updated Data"
+          })
+    }
+    catch(err)
+        {
+          res.status(500).send({
+            msg : "Internal server side error"
+          })
+        }
+  })
 
 
 
@@ -204,87 +217,6 @@ client.connect(err => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// app.post('/login',(req,res)=>{
-
-//    // console.log(req.body)
-
-//     try{
-
-//     let data = req.body
-
-//     data.slugfield=[],
-//     data.token="",
-//     data.registration="",
-//     data.doctorChamber=[],
-//     data.isAdmin=false,
-//     data.isModerator=false,
-//     data.isDoctor=false,
-//     data.appointmentHistory=[]
-
-//     res.status(200).send({
-//       msg : "succesfully new registered",
-//       data
-//     })
-
-//     console.log(req.body);
-
-  
-//   }
-//   catch(err)
-//   {
-//     res.status(500).send({
-//       msg : "server side error"
-//     })
-//   }
-
-//   })
-
-//   app.post('/hospitalModel',(req,res)=>{
-//     try{
-
-//         let data = req.body
-    
-//         data.name="",
-//         data.address="",
-//         data.phone="",
-//         data.alternativePhone="",
-//         res.status(200).send({
-//           msg : "succesfully new registered",
-//           data
-//         })
-    
-//         console.log(req.body);
-    
-      
-//       }
-//       catch(err)
-//       {
-//         res.status(500).send({
-//           msg : "server side error"
-//         })
-//       }
-    
-
-//   })
 
 app.listen(4000,()=>console.log('Find to the port 4000'))
 
