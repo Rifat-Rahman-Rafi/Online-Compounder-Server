@@ -118,12 +118,8 @@ client.connect(err => {
         }
    })
  
-   
-
+  
    app.put('/userUpdate',async (req,res)=>{
-    // req.body.email
-    // data = req.body.adminemail
-    // if(data === null || data.isAdmin==false)
     try{
 
       if(req.body.token===undefined)return res.status(501).send({
@@ -131,7 +127,6 @@ client.connect(err => {
        })
 
       let data  = await collection.find({_id:req.body.token})
-
       if(req.body.name!==undefined) data.name = req.body.name
       if(req.body.pic!=undefined) data.photo=req.body.pic  
       if(req.body.registration)data.registration=req.body.registration
@@ -156,22 +151,29 @@ client.connect(err => {
 
 
 
-
-
-  app.put('/userUpdateAdmin',async (req,res)=>{
+  app.put('/userUpdate/admin',async (req,res)=>{
     try{
+      let adminToken=req.body.adminToken
 
-      if(req.body.token===undefined)return res.status(501).send({
+      if(req.body.token===undefined || adminToken===undefined)return res.status(501).send({
         msg : "Token required"
        })
+       let adminDetails = await collection.findOne({token:adminToken})
+     if(adminDetails==null || adminDetails.isAdmin===false)
+     return res.status(401).send({
+       msg : 'please send an admin token'
+     })
 
       let data  = await collection.find({_id:req.body.token})
-
       if(req.body.name!==undefined) data.name = req.body.name
       if(req.body.pic!=undefined) data.photo=req.body.pic  
-      if(req.body.registration)data.registration=req.body.registration
-      if(req.body.isDoctor)data.isDoctor=req.body.isDoctor
-      if(req.body.password)data.password=req.body.password
+      if(req.body.registration!=undefined)data.registration=req.body.registration
+      if(req.body.doctorChamber!=undefined)data.doctorChamber=req.body.doctorChamber
+      if(req.body.isModerator!=undefined)data.isModerator=req.body.isModerator
+      if(req.body.isStatus!=undefined)data.isStatus=req.body.isStatus
+      if(req.body.isDoctor!=undefined)data.isDoctor=req.body.isDoctor
+      if(req.body.password!=undefined)data.password=req.body.password
+      if(req.body.appointmentHistory!=undefined)data.appointmentHistory=req.body.appointmentHistory
         await collection.updateOne({token:req.body.token},
           {
             $set:data    
